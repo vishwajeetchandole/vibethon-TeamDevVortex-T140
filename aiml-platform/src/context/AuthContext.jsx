@@ -16,13 +16,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = (email, password) => {
-    const newUser = {
+    saveUser({
       email,
       password,
       xp: 0,
       history: []
-    };
-    saveUser(newUser);
+    });
   };
 
   const login = (email, password) => {
@@ -42,16 +41,14 @@ export const AuthProvider = ({ children }) => {
   const addActivity = (type, title) => {
     if (!user) return;
 
-    const updated = {
+    saveUser({
       ...user,
       xp: user.xp + 10,
       history: [
         { type, title, date: new Date().toLocaleString() },
         ...user.history
       ]
-    };
-
-    saveUser(updated);
+    });
   };
 
   return (

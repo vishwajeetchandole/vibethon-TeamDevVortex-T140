@@ -16,97 +16,74 @@ export default function MLPlayground() {
     setAccuracy(null);
 
     setTimeout(() => {
-      const fakeAccuracy = (Math.random() * 20 + 75).toFixed(2);
-
-      setAccuracy(fakeAccuracy);
+      const acc = (Math.random() * 20 + 75).toFixed(2);
+      setAccuracy(acc);
       setTraining(false);
 
-      // 🎯 LOG ACTIVITY + XP
-      addActivity(
-        "playground",
-        `Trained ML Model on ${file.name} → Accuracy ${fakeAccuracy}%`
-      );
+      addActivity("playground", `Model trained with ${acc}% accuracy`);
     }, 2000);
   };
 
-  const reset = () => {
-    setFile(null);
-    setAccuracy(null);
-    setTraining(false);
-  };
-
   return (
-    <div>
+    <div className="bg-white min-h-screen">
+
       <Navbar />
 
-      <div className="px-8 mt-16 text-center">
+      <div className="flex justify-center px-6 mt-10">
 
-        <h1 className="text-4xl font-bold text-cyan-400">
-          ML Playground ⚙️
-        </h1>
+        <div className="card p-8 w-full max-w-xl">
 
-        <p className="text-gray-400 mt-3">
-          Upload dataset → Train model → Get AI insights
-        </p>
+          <h1 className="text-2xl font-bold text-cyan-600">
+            ML Playground ⚙️
+          </h1>
 
-        {/* Upload Box */}
-        <div className="mt-10 max-w-xl mx-auto bg-gray-900 border border-gray-800 p-6 rounded-2xl">
+          <p className="text-gray-500 text-sm mt-2">
+            Upload dataset → Train model → Get AI result
+          </p>
 
           <input
             type="file"
-            className="w-full text-gray-300"
+            className="mt-6 w-full border p-3 rounded-xl"
             onChange={(e) => setFile(e.target.files[0])}
           />
 
           {file && (
-            <p className="text-green-400 mt-3">
+            <p className="text-green-600 mt-3 text-sm">
               Selected: {file.name}
             </p>
           )}
 
-          <div className="flex gap-3 justify-center mt-6">
+          <button
+            onClick={handleTrain}
+            className="btn-primary mt-6 w-full"
+          >
+            Train Model 🚀
+          </button>
 
-            <button
-              onClick={handleTrain}
-              className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg font-semibold"
-            >
-              Train Model 🚀
-            </button>
+          {training && (
+            <p className="text-yellow-500 mt-4 text-sm animate-pulse">
+              Training AI model...
+            </p>
+          )}
 
-            <button
-              onClick={reset}
-              className="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg"
-            >
-              Reset
-            </button>
+          {accuracy && (
+            <div className="mt-6 text-center">
 
-          </div>
+              <h2 className="text-xl font-semibold">
+                Accuracy: {accuracy}%
+              </h2>
+
+              <p className="text-gray-500 text-sm">
+                Simulated ML training result
+              </p>
+
+            </div>
+          )}
 
         </div>
 
-        {/* Training State */}
-        {training && (
-          <div className="mt-10 text-yellow-400 animate-pulse">
-            Training AI Model... ⚡ Analyzing dataset patterns
-          </div>
-        )}
-
-        {/* Result */}
-        {accuracy && (
-          <div className="mt-10">
-
-            <h2 className="text-2xl font-bold text-white">
-              Model Accuracy: {accuracy}%
-            </h2>
-
-            <p className="text-gray-400 mt-2">
-              AI model trained successfully 🎯
-            </p>
-
-          </div>
-        )}
-
       </div>
+
     </div>
   );
 }

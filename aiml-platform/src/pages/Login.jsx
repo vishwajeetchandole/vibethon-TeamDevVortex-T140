@@ -1,46 +1,63 @@
 import { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
   const handleLogin = () => {
     const ok = login(email, password);
-    if (ok) navigate("/dashboard");
+    if (ok) navigate(from);
     else alert("Invalid credentials");
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-black text-white">
+    <div className="min-h-screen flex items-center justify-center bg-white">
 
-      <div className="p-8 bg-gray-900 rounded-2xl w-96">
+      <div className="card p-8 w-full max-w-sm relative">
 
-        <h1 className="text-2xl text-cyan-400 mb-6">Login</h1>
+        {/* CLOSE BUTTON */}
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-3 right-3 text-gray-400 hover:text-red-500"
+        >
+          ✕
+        </button>
 
-        <input className="w-full p-2 mb-3 bg-black border"
+        <h1 className="text-2xl font-bold text-cyan-600">
+          Login
+        </h1>
+
+        <input
+          className="w-full border p-3 rounded-xl mt-6"
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <input className="w-full p-2 mb-4 bg-black border"
-          placeholder="Password"
+        <input
           type="password"
+          className="w-full border p-3 rounded-xl mt-3"
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button
-          onClick={handleLogin}
-          className="w-full bg-cyan-500 py-2 rounded"
-        >
+        <button onClick={handleLogin} className="btn-primary w-full mt-5">
           Login
         </button>
 
+        <p className="text-sm text-gray-500 mt-4">
+          No account? <Link className="text-cyan-600" to="/signup">Signup</Link>
+        </p>
+
       </div>
+
     </div>
   );
 }

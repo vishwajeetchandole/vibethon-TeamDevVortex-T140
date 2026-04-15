@@ -1,104 +1,117 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
-import { quizData } from "../data/quizData";
 import { useAuth } from "../context/AuthContext";
 
+const quizData = [
+  {
+    question: "What is supervised learning?",
+    options: [
+      "Learning without data",
+      "Learning with labeled data",
+      "Random prediction",
+      "No training required"
+    ],
+    answer: 1
+  },
+  {
+    question: "Which algorithm is used for classification?",
+    options: ["K-Means", "Linear Regression", "Decision Tree", "Apriori"],
+    answer: 2
+  },
+  {
+    question: "What is overfitting?",
+    options: [
+      "Model works perfectly",
+      "Model memorizes data",
+      "Model ignores data",
+      "Model trains fast"
+    ],
+    answer: 1
+  }
+];
+
 export default function Quiz() {
-  const [current, setCurrent] = useState(0);
+  const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
+  const [done, setDone] = useState(false);
 
   const { addActivity } = useAuth();
 
-  const question = quizData[current];
+  const q = quizData[index];
 
-  const handleAnswer = (index) => {
-    let newScore = score;
+  const handleAnswer = (i) => {
+    if (i === q.answer) setScore(score + 1);
 
-    if (index === question.answer) {
-      newScore = score + 1;
-      setScore(newScore);
-    }
-
-    if (current + 1 < quizData.length) {
-      setCurrent(current + 1);
+    if (index + 1 < quizData.length) {
+      setIndex(index + 1);
     } else {
-      setShowResult(true);
-
-      // 🎯 LOG ACTIVITY ONCE AT END
-      addActivity(
-        "quiz",
-        `Completed Quiz - Score ${newScore}/${quizData.length}`
-      );
+      setDone(true);
+      addActivity("quiz", `Scored ${score + 1}/${quizData.length}`);
     }
-  };
-
-  const restartQuiz = () => {
-    setCurrent(0);
-    setScore(0);
-    setShowResult(false);
   };
 
   return (
-    <div>
+    <div className="bg-white min-h-screen">
+
       <Navbar />
 
-      <div className="text-center mt-16 px-6">
+      <div className="px-6 mt-10 flex justify-center">
 
-        <h1 className="text-4xl font-bold text-cyan-400">
-          AI Quiz Engine 🧠
-        </h1>
+        <div className="card p-8 w-full max-w-xl">
 
-        {showResult ? (
-          <div className="mt-10">
+          <h1 className="text-2xl font-bold text-cyan-600">
+            AI Quiz Engine 🧠
+          </h1>
 
-            <h2 className="text-2xl font-bold text-white">
-              Your Score: {score} / {quizData.length}
-            </h2>
+          {done ? (
+            <div className="mt-6 text-center">
 
-            <p className="text-gray-400 mt-2">
-              {score === quizData.length
-                ? "Perfect Score 🔥"
-                : "Good try! Keep learning 🚀"}
-            </p>
+              <h2 className="text-xl font-semibold">
+                Score: {score}/{quizData.length}
+              </h2>
 
-            <button
-              onClick={restartQuiz}
-              className="mt-6 px-5 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg"
-            >
-              Restart Quiz
-            </button>
-
-          </div>
-        ) : (
-          <div className="mt-10 max-w-xl mx-auto bg-gray-900 border border-gray-800 p-6 rounded-2xl">
-
-            <h2 className="text-lg font-semibold text-white">
-              {question.question}
-            </h2>
-
-            <div className="mt-4 space-y-3 text-left">
-
-              {question.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleAnswer(i)}
-                  className="w-full p-2 bg-black rounded border border-gray-800 hover:border-cyan-500 text-left transition"
-                >
-                  {opt}
-                </button>
-              ))}
+              <button
+                onClick={() => {
+                  setIndex(0);
+                  setScore(0);
+                  setDone(false);
+                }}
+                className="btn-primary mt-4"
+              >
+                Restart
+              </button>
 
             </div>
+          ) : (
+            <div className="mt-6">
 
-            <p className="text-gray-400 mt-4 text-sm">
-              Question {current + 1} / {quizData.length}
-            </p>
+              <h2 className="font-medium">{q.question}</h2>
 
-          </div>
-        )}
+              <div className="mt-4 space-y-3">
+
+                {q.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleAnswer(i)}
+                    className="w-full p-3 border rounded-xl hover:bg-cyan-50 text-left"
+                  >
+                    {opt}
+                  </button>
+                ))}
+
+              </div>
+
+              <p className="text-gray-500 text-sm mt-4">
+                Question {index + 1}/{quizData.length}
+              </p>
+
+            </div>
+          )}
+
+        </div>
 
       </div>
+
     </div>
   );
 }

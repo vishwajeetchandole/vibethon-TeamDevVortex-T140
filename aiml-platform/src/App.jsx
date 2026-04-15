@@ -16,7 +16,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<Login />} />
@@ -24,26 +23,43 @@ export default function App() {
 
         <Route path="/learn" element={<Learn />} />
 
-        <Route path="/quiz" element={
-          <ProtectedRoute><Quiz /></ProtectedRoute>
-        } />
+        <Route
+          path="/quiz"
+          element={
+            <ProtectedRoute>
+              <Quiz />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/games" element={
-          <ProtectedRoute><Games /></ProtectedRoute>
-        } />
+        <Route
+          path="/games"
+          element={
+            <ProtectedRoute>
+              <Games />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/playground" element={
-          <ProtectedRoute><MLPlayground /></ProtectedRoute>
-        } />
+        <Route
+          path="/playground"
+          element={
+            <ProtectedRoute>
+              <MLPlayground />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/tutor" element={
-          <ProtectedRoute><AITutor /></ProtectedRoute>
-        } />
+        <Route path="/aitutor" element={<AITutor />} />
 
-        <Route path="/dashboard" element={
-          <ProtectedRoute><Dashboard /></ProtectedRoute>
-        } />
-
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

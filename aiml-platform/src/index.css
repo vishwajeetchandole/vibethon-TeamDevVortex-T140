@@ -1,8 +1,32 @@
 @import "tailwindcss";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-  margin: 0;
-  background: #0a0a0a;
-  color: white;
-  font-family: system-ui, sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+  font-family: ui-sans-serif, system-ui;
+}
+
+/* Reusable UI system */
+.card {
+  @apply bg-white border border-gray-200 rounded-2xl shadow-sm;
+}
+
+.card-hover {
+  @apply transition hover:shadow-md hover:-translate-y-1 duration-200;
+}
+
+.btn-primary {
+  @apply bg-cyan-600 text-white px-5 py-2.5 rounded-xl hover:bg-cyan-700 transition;
+}
+
+.btn-secondary {
+  @apply border border-cyan-600 text-cyan-600 px-5 py-2.5 rounded-xl hover:bg-cyan-50 transition;
+}
+
+.text-muted {
+  @apply text-gray-500;
 }

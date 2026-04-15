@@ -1,7 +1,24 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
-import { gameData } from "../data/gameData";
 import { useAuth } from "../context/AuthContext";
+
+const gameData = [
+  {
+    question: "Which model is best for clustering?",
+    options: ["KNN", "K-Means", "SVM", "Linear Regression"],
+    answer: 1
+  },
+  {
+    question: "Which is used for regression?",
+    options: ["Decision Tree", "Linear Regression", "CNN", "Naive Bayes"],
+    answer: 1
+  },
+  {
+    question: "AI that imitates brain is?",
+    options: ["ML", "DL", "NLP", "CV"],
+    answer: 1
+  }
+];
 
 export default function Games() {
   const [index, setIndex] = useState(0);
@@ -10,95 +27,81 @@ export default function Games() {
 
   const { addActivity } = useAuth();
 
-  const question = gameData[index];
+  const q = gameData[index];
 
   const handleClick = (i) => {
-    let newScore = score;
-
-    if (i === question.answer) {
-      newScore = score + 1;
-      setScore(newScore);
-    }
+    if (i === q.answer) setScore(score + 1);
 
     if (index + 1 < gameData.length) {
       setIndex(index + 1);
     } else {
       setDone(true);
-
-      // 🎯 LOG ACTIVITY + XP
-      addActivity(
-        "game",
-        `Completed ML Guess Game - Score ${newScore}/${gameData.length}`
-      );
+      addActivity("game", `Game Score ${score + 1}/${gameData.length}`);
     }
   };
 
-  const restartGame = () => {
-    setIndex(0);
-    setScore(0);
-    setDone(false);
-  };
-
   return (
-    <div>
+    <div className="bg-white min-h-screen">
+
       <Navbar />
 
-      <div className="text-center mt-16 px-6">
+      <div className="flex justify-center px-6 mt-10">
 
-        <h1 className="text-4xl font-bold text-cyan-400">
-          ML Guess Game 🎮
-        </h1>
+        <div className="card p-8 w-full max-w-xl">
 
-        {done ? (
-          <div className="mt-10">
+          <h1 className="text-2xl font-bold text-cyan-600">
+            ML Guess Game 🎮
+          </h1>
 
-            <h2 className="text-2xl font-bold text-white">
-              Your Score: {score} / {gameData.length}
-            </h2>
+          {done ? (
+            <div className="mt-6 text-center">
 
-            <p className="text-gray-400 mt-2">
-              {score === gameData.length
-                ? "Perfect AI Mind 🔥"
-                : "Good try! Keep learning 🚀"}
-            </p>
+              <h2 className="text-xl font-semibold">
+                Score: {score}/{gameData.length}
+              </h2>
 
-            <button
-              onClick={restartGame}
-              className="mt-6 px-5 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg"
-            >
-              Play Again
-            </button>
-
-          </div>
-        ) : (
-          <div className="mt-10 max-w-xl mx-auto bg-gray-900 border border-gray-800 p-6 rounded-2xl">
-
-            <h2 className="text-lg font-semibold text-white">
-              {question.question}
-            </h2>
-
-            <div className="mt-4 space-y-3 text-left">
-
-              {question.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleClick(i)}
-                  className="w-full p-2 bg-black rounded border border-gray-800 hover:border-cyan-500 text-left transition"
-                >
-                  {opt}
-                </button>
-              ))}
+              <button
+                onClick={() => {
+                  setIndex(0);
+                  setScore(0);
+                  setDone(false);
+                }}
+                className="btn-primary mt-4"
+              >
+                Play Again
+              </button>
 
             </div>
+          ) : (
+            <div className="mt-6">
 
-            <p className="text-gray-400 mt-4 text-sm">
-              Level {index + 1} / {gameData.length}
-            </p>
+              <h2 className="font-medium">{q.question}</h2>
 
-          </div>
-        )}
+              <div className="mt-4 space-y-3">
+
+                {q.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleClick(i)}
+                    className="w-full p-3 border rounded-xl hover:bg-cyan-50 text-left"
+                  >
+                    {opt}
+                  </button>
+                ))}
+
+              </div>
+
+              <p className="text-gray-500 text-sm mt-4">
+                Level {index + 1}/{gameData.length}
+              </p>
+
+            </div>
+          )}
+
+        </div>
 
       </div>
+
     </div>
   );
 }

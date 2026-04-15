@@ -1,58 +1,64 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 export default function AITutor() {
-  const [messages, setMessages] = useState([
-    { role: "bot", text: "Hey! I’m your AI Tutor 🤖 Ask me anything about ML!" }
-  ]);
-
   const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
 
-  const fakeResponses = [
-    "Neural Networks are inspired by the human brain 🧠",
-    "Overfitting happens when your model memorizes data instead of learning patterns.",
-    "Gradient Descent helps optimize model accuracy.",
-    "KNN classifies based on nearest neighbors 📊",
-    "Decision Trees split data based on conditions 🌳"
-  ];
+  const { addActivity } = useAuth();
 
-  const sendMessage = () => {
+  const handleAsk = () => {
     if (!input.trim()) return;
 
-    const userMsg = { role: "user", text: input };
+    const newMessages = [
+      ...messages,
+      { role: "user", text: input },
+      { role: "bot", text: `🤖 AI: "${input}" is a great question (demo response)` }
+    ];
 
-    const botMsg = {
-      role: "bot",
-      text: fakeResponses[Math.floor(Math.random() * fakeResponses.length)]
-    };
-
-    setMessages([...messages, userMsg, botMsg]);
+    setMessages(newMessages);
+    addActivity("ai", `Asked AI: ${input}`);
     setInput("");
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-white">
+
+      {/* NAVBAR */}
       <Navbar />
 
-      <div className="px-8 mt-10">
+      {/* PAGE WRAPPER (IMPORTANT FOR VISIBILITY) */}
+      <div className="flex flex-col items-center px-6 py-10">
 
-        <h1 className="text-4xl font-bold text-cyan-400 text-center">
+        {/* TITLE */}
+        <h1 className="text-3xl font-bold text-cyan-600">
           AI Tutor 🤖
         </h1>
 
-        {/* Chat Box */}
-        <div className="mt-10 max-w-2xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-4 h-[500px] flex flex-col">
+        <p className="text-gray-500 mt-2 text-center">
+          Ask anything about AI/ML concepts
+        </p>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto space-y-3 p-2">
+        {/* CHAT BOX */}
+        <div className="card w-full max-w-2xl mt-8 p-6">
+
+          {/* MESSAGES */}
+          <div className="h-80 overflow-y-auto space-y-3 border-b pb-4">
+
+            {messages.length === 0 && (
+              <p className="text-gray-400 text-sm text-center mt-10">
+                Start asking AI questions...
+              </p>
+            )}
 
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`p-2 rounded-lg text-sm max-w-[80%] ${
+                className={`p-3 rounded-xl text-sm w-fit max-w-[80%] ${
                   msg.role === "user"
-                    ? "ml-auto bg-cyan-500 text-black"
-                    : "bg-black border border-gray-700 text-gray-300"
+                    ? "ml-auto bg-cyan-50 text-right"
+                    : "bg-gray-100"
                 }`}
               >
                 {msg.text}
@@ -61,20 +67,17 @@ export default function AITutor() {
 
           </div>
 
-          {/* Input */}
-          <div className="flex gap-2 mt-3">
+          {/* INPUT */}
+          <div className="flex gap-2 mt-4">
 
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 p-2 bg-black border border-gray-700 rounded-lg text-white"
-              placeholder="Ask about ML..."
+              placeholder="Ask AI something..."
+              className="flex-1 border p-3 rounded-xl outline-none focus:border-cyan-500"
             />
 
-            <button
-              onClick={sendMessage}
-              className="px-4 bg-cyan-500 hover:bg-cyan-600 rounded-lg"
-            >
+            <button onClick={handleAsk} className="btn-primary">
               Send
             </button>
 
@@ -83,6 +86,7 @@ export default function AITutor() {
         </div>
 
       </div>
+
     </div>
   );
 }
