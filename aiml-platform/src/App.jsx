@@ -7,18 +7,43 @@ import Games from "./pages/Games";
 import MLPlayground from "./pages/MLPlayground";
 import AITutor from "./pages/AITutor";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
         <Route path="/learn" element={<Learn />} />
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="/games" element={<Games />} />
-        <Route path="/playground" element={<MLPlayground />} />
-        <Route path="/tutor" element={<AITutor />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/quiz" element={
+          <ProtectedRoute><Quiz /></ProtectedRoute>
+        } />
+
+        <Route path="/games" element={
+          <ProtectedRoute><Games /></ProtectedRoute>
+        } />
+
+        <Route path="/playground" element={
+          <ProtectedRoute><MLPlayground /></ProtectedRoute>
+        } />
+
+        <Route path="/tutor" element={
+          <ProtectedRoute><AITutor /></ProtectedRoute>
+        } />
+
+        <Route path="/dashboard" element={
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
+
       </Routes>
     </BrowserRouter>
   );

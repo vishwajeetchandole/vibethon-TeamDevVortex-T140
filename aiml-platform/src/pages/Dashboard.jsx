@@ -1,13 +1,16 @@
 import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
-  const user = {
-    name: "AI Learner",
-    xp: 320,
-    level: 4,
-    streak: 5,
-    completed: 3
-  };
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="text-center mt-20 text-white">
+        Please login first 😤
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -19,49 +22,46 @@ export default function Dashboard() {
           Dashboard 📊
         </h1>
 
-        <p className="text-gray-400 mt-2">
-          Track your AI/ML learning progress
-        </p>
-
         {/* Stats */}
-        <div className="grid md:grid-cols-4 gap-6 mt-10">
+        <div className="grid md:grid-cols-3 gap-6 mt-10">
 
           <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
-            <h2 className="text-gray-400">XP Points</h2>
-            <p className="text-3xl font-bold text-cyan-400">{user.xp}</p>
+            <h2 className="text-gray-400">XP</h2>
+            <p className="text-3xl text-cyan-400">{user.xp}</p>
           </div>
 
           <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
-            <h2 className="text-gray-400">Level</h2>
-            <p className="text-3xl font-bold text-cyan-400">{user.level}</p>
+            <h2 className="text-gray-400">Streak</h2>
+            <p className="text-3xl text-cyan-400">{user.streak}</p>
           </div>
 
           <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
-            <h2 className="text-gray-400">Streak 🔥</h2>
-            <p className="text-3xl font-bold text-cyan-400">{user.streak} days</p>
-          </div>
-
-          <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
-            <h2 className="text-gray-400">Completed</h2>
-            <p className="text-3xl font-bold text-cyan-400">{user.completed}</p>
+            <h2 className="text-gray-400">Activities</h2>
+            <p className="text-3xl text-cyan-400">{user.history.length}</p>
           </div>
 
         </div>
 
-        {/* Progress Section */}
-        <div className="mt-10 p-6 bg-black/40 border border-white/10 rounded-2xl backdrop-blur-xl">
+        {/* Activity History */}
+        <div className="mt-10 bg-black/40 border border-white/10 rounded-2xl p-6">
 
-          <h2 className="text-xl font-semibold text-white">
-            Learning Progress 🚀
+          <h2 className="text-xl text-white mb-4">
+            Activity History 🧠
           </h2>
 
-          <div className="mt-4 w-full bg-gray-800 rounded-full h-3">
-            <div className="bg-cyan-500 h-3 rounded-full w-[60%]"></div>
-          </div>
-
-          <p className="text-gray-400 mt-2 text-sm">
-            60% completed towards next level
-          </p>
+          {user.history.length === 0 ? (
+            <p className="text-gray-400">No activity yet</p>
+          ) : (
+            <div className="space-y-3">
+              {user.history.map((h, i) => (
+                <div key={i} className="p-3 bg-gray-900 rounded-lg">
+                  <p className="text-cyan-400">{h.type}</p>
+                  <p className="text-white">{h.title}</p>
+                  <p className="text-gray-500 text-sm">{h.date}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
         </div>
 

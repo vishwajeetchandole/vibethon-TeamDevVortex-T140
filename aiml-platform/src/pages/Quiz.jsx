@@ -1,24 +1,42 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { quizData } from "../data/quizData";
+import { useAuth } from "../context/AuthContext";
 
 export default function Quiz() {
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
 
+  const { addActivity } = useAuth();
+
   const question = quizData[current];
 
   const handleAnswer = (index) => {
+    let newScore = score;
+
     if (index === question.answer) {
-      setScore(score + 1);
+      newScore = score + 1;
+      setScore(newScore);
     }
 
     if (current + 1 < quizData.length) {
       setCurrent(current + 1);
     } else {
       setShowResult(true);
+
+      // 🎯 LOG ACTIVITY ONCE AT END
+      addActivity(
+        "quiz",
+        `Completed Quiz - Score ${newScore}/${quizData.length}`
+      );
     }
+  };
+
+  const restartQuiz = () => {
+    setCurrent(0);
+    setScore(0);
+    setShowResult(false);
   };
 
   return (
@@ -33,25 +51,29 @@ export default function Quiz() {
 
         {showResult ? (
           <div className="mt-10">
-            <h2 className="text-2xl font-bold">
+
+            <h2 className="text-2xl font-bold text-white">
               Your Score: {score} / {quizData.length}
             </h2>
 
+            <p className="text-gray-400 mt-2">
+              {score === quizData.length
+                ? "Perfect Score 🔥"
+                : "Good try! Keep learning 🚀"}
+            </p>
+
             <button
-              onClick={() => {
-                setCurrent(0);
-                setScore(0);
-                setShowResult(false);
-              }}
-              className="mt-6 px-5 py-2 bg-cyan-500 rounded-lg"
+              onClick={restartQuiz}
+              className="mt-6 px-5 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg"
             >
               Restart Quiz
             </button>
+
           </div>
         ) : (
           <div className="mt-10 max-w-xl mx-auto bg-gray-900 border border-gray-800 p-6 rounded-2xl">
 
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-semibold text-white">
               {question.question}
             </h2>
 
@@ -61,7 +83,7 @@ export default function Quiz() {
                 <button
                   key={i}
                   onClick={() => handleAnswer(i)}
-                  className="w-full p-2 bg-black rounded border border-gray-800 hover:border-cyan-500 text-left"
+                  className="w-full p-2 bg-black rounded border border-gray-800 hover:border-cyan-500 text-left transition"
                 >
                   {opt}
                 </button>
